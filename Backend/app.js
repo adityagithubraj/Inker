@@ -2,6 +2,10 @@ const express = require('express');
 const userRoutes = require('./router/userRouter');
 const connectDB = require('./config/db');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
+
+
 
 const path = require('path');
 const cors = require("cors");
@@ -9,6 +13,7 @@ const PORT = process.env.PORT || 4000;
 
 const app = express();
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // MongoDB connection
 connectDB();
 
@@ -46,8 +51,10 @@ app.use(express.json());
 app.use('/user', userRoutes);
 app.get("/",(req,res)=>{
 res.send("welcome to the Inker api  mkdir -  Khushi Gupta ")
+
 });
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Swagger docs available at http://localhost:${PORT}/api-docs`);
 });

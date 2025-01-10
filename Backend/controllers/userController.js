@@ -96,4 +96,3 @@ exports.userUnfollw = async (req, res) => {
       res.status(500).json({ message: 'Error unfollowing user', error: err.message });
     }
   };
-  
