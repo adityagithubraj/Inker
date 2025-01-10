@@ -1,9 +1,12 @@
 const express = require("express");
-const auth = require("../midderware/auth");
+const bcrypt = require("bcrypt")
+const User = require("../models/userModel")
+//const auth = require("../midderware/auth");
 
 exports.singnup = async (req, res) => {
   try {
     const { username, email, password } = req.body;
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({ username, email, password: hashedPassword });
@@ -20,12 +23,11 @@ exports.singnup = async (req, res) => {
 };
 
 
-
-
 exports.login =  async (req, res) => {
     try {
       const { email, password } = req.body;
       const user = await User.findOne({ email });
+      console.log("user email", user )
   
       if (!user || !(await bcrypt.compare(password, user.password))) {
         return res.status(401).json({ message: 'Invalid credentials' });
