@@ -1,16 +1,16 @@
 const express = require('express');
 const userController = require('../controllers/userController');
 const auth  =require("../midderware/auth");
-const upload  = require("../midderware/uplodeImg");
+const upload  = require("../midderware/uploadImg");
 const userRouter = express.Router();
 
 
 
 userRouter.post('/signup' , userController.singnup);
-userRouter.post('/login',auth ,userController.singnup);
-userRouter.get("/profile/:id", auth , userController.userProfile);
-userRouter.get("/:id/follow", auth , userController.userUnfollw);
-userRouter.get("/:id/unfollow", auth , userController.userFollw);
+userRouter.post('/login',userController.login);
+userRouter.get("/profile/:id" , userController.userProfile);
+userRouter.get("/:id/follow" , userController.userUnfollw);
+userRouter.get("/:id/unfollow" , userController.userUnfollw);
 
 
 

@@ -19,8 +19,8 @@ const storage = multer.diskStorage({
 });
 
 const uploadImg = multer({ storage: storage }).fields([
-  { name: 'aadharfront', maxCount: 1 }, 
-  { name: 'aadharback', maxCount: 1 }, 
+  { name: 'aadharfront', maxCount: 1 }
+  
 ]);
 
 module.exports = uploadImg;

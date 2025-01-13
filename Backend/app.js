@@ -1,11 +1,11 @@
 const express = require('express');
 const userRoutes = require('./router/userRouter');
+
+const postRoutes = require('./router/postRouter');
 const connectDB = require('./config/db');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
-
-
 
 const path = require('path');
 const cors = require("cors");
@@ -16,7 +16,6 @@ const app = express();
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // MongoDB connection
 connectDB();
-
 require('dotenv').config();
 
 
@@ -44,14 +43,17 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // Middleware
 app.use(express.json());
-
+ 
 
 
 // Routes
 app.use('/user', userRoutes);
+app.use('/post', postRoutes);
+
+
+
 app.get("/",(req,res)=>{
 res.send("welcome to the Inker api  mkdir -  Khushi Gupta ")
-
 });
 
 app.listen(PORT, () => {

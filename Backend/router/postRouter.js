@@ -1,12 +1,11 @@
 const express = require('express');
 const postController = require('../controllers/postController');
-const auth  =require("../middlewares/authenticat");
-const upload  = require("../midderware/uplodeImg");
+const upload  = require("../midderware/uploadImg");
 
 const postRouter = express.Router();
 
 
-postRouter.post('/create',auth ,upload.single('image'), userController.singnup);
+postRouter.post('/create' ,upload.single('image'), postController.createPost);
 
 
 
