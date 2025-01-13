@@ -27,20 +27,6 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-
-// Elasticsearch client
-// const esClient = new elasticsearch.Client({
-//   host: process.env.ELASTICSEARCH_HOST,
-//   log: 'trace',
-// });
-
-
-// OpenAI configuration
-// const configuration = new Configuration({
-//   apiKey: process.env.OPENAI_API_KEY,
-// });
-// const openai = new OpenAIApi(configuration);
-
 // Middleware
 app.use(express.json());
  

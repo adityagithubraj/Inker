@@ -4,6 +4,8 @@ const User = require("../models/userModel")
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+const mongoose = require('mongoose')
+
 //const auth = require("../midderware/auth");
 
 exports.singnup = async (req, res) => {
@@ -59,43 +61,75 @@ exports.userProfile = async (req, res) => {
 
 
 
-exports.userFollw = async (req, res) => {
+exports.userFollow = async (req, res) => {
   try {
-    const userToFollow = await User.findById(req.params.id);
-    const currentUser = await User.findById(req.user._id);
+    const { id } = req.params;
 
-    if (!userToFollow || !currentUser) return res.status(404).json({ message: 'User not found' });
+    // Validate ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
 
-    if (!currentUser.following.includes(userToFollow._id)) {
+    const userToFollow = await User.findById(id);
+    const currentUser = await User.findById(req.user.userId);
+
+    if (!userToFollow || !currentUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Prevent self-follow
+    if (req.user.userId === id) {
+      return res.status(400).json({ message: 'You cannot follow yourself' });
+    }
+
+    if (!currentUser.following.includes(userToFollow._id.toString())) {
       currentUser.following.push(userToFollow._id);
       userToFollow.followers.push(currentUser._id);
       await currentUser.save();
       await userToFollow.save();
     }
+
     res.json({ message: 'Followed successfully' });
   } catch (err) {
+    console.error("Error:", err);
     res.status(500).json({ message: 'Error following user', error: err.message });
   }
 };
 
-
-
-
-exports.userUnfollw = async (req, res) => {
+exports.userUnfollow = async (req, res) => {
   try {
-    const userToUnfollow = await User.findById(req.params.id);
+    const { id } = req.params;
+
+    // Validate ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
+    const userToUnfollow = await User.findById(id);
     const currentUser = await User.findById(req.user.userId);
 
-    if (!userToUnfollow || !currentUser) return res.status(404).json({ message: 'User not found' });
+    if (!userToUnfollow || !currentUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
-    currentUser.following = currentUser.following.filter((id) => id.toString() !== userToUnfollow._id.toString());
-    userToUnfollow.followers = userToUnfollow.followers.filter((id) => id.toString() !== currentUser._id.toString());
+    // Prevent self-unfollow
+    if (req.user.userId === id) {
+      return res.status(400).json({ message: 'You cannot unfollow yourself' });
+    }
+
+    currentUser.following = currentUser.following.filter(
+      (followerId) => followerId.toString() !== userToUnfollow._id.toString()
+    );
+    userToUnfollow.followers = userToUnfollow.followers.filter(
+      (followerId) => followerId.toString() !== currentUser._id.toString()
+    );
 
     await currentUser.save();
     await userToUnfollow.save();
 
     res.json({ message: 'Unfollowed successfully' });
   } catch (err) {
+    console.error("Error:", err);
     res.status(500).json({ message: 'Error unfollowing user', error: err.message });
   }
 };

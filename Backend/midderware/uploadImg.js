@@ -1,26 +1,19 @@
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 
-const aadhaarDir = path.join(__dirname, '..', 'public'); 
-if (!fs.existsSync(aadhaarDir)) {
-  fs.mkdirSync(aadhaarDir, { recursive: true }); 
-}
-
+// Configure multer for file upload
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, aadhaarDir); 
+    cb(null, 'public'); 
   },
   filename: (req, file, cb) => {
-  
+ 
     const ext = path.extname(file.originalname);
     cb(null, `${Date.now()}${ext}`); 
   }
 });
 
-const uploadImg = multer({ storage: storage }).fields([
-  { name: 'aadharfront', maxCount: 1 }
-  
-]);
+const upload = multer({ storage: storage });
 
-module.exports = uploadImg;
+
+module.exports = upload;
