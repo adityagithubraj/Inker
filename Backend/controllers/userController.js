@@ -96,7 +96,7 @@ exports.userFollow = async (req, res) => {
   }
 };
 
-exports.userUnfollow = async (req, res) => {
+exports.userUngitfollow = async (req, res) => {
   try {
     const { id } = req.params;
 
