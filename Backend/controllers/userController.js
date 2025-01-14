@@ -112,7 +112,6 @@ exports.userUnfollow = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Prevent self-unfollow
     if (req.user.userId === id) {
       return res.status(400).json({ message: 'You cannot unfollow yourself' });
     }

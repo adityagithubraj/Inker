@@ -2,6 +2,8 @@ const express = require("express");
 const bcrypt = require("bcrypt")
 const User = require("../models/userModel")
 const jwt = require('jsonwebtoken');
+const generateAIImage = require("./imageGen");
+
 require('dotenv').config();
 const Post = require("../models/postModel")
 
@@ -9,10 +11,21 @@ const Post = require("../models/postModel")
 exports.createPost = async (req, res) => { 
   try {
     let post_img = '';
+
+    // Check if a file was uploaded
     if (req.file && req.file.filename) {
       post_img = req.file.filename;
-    }   
-    const { subject, details } = req.body;
+    } else if (req.body.subject) {
+      // If no file, generate an AI image based on the subject
+      post_img = await generateAIImage(req.body.subject);
+      console.log("this img url from OPENAI ", post_img );
+    }
+
+    
+    const { subject, details  } = req.body;
+
+    generateAIImage(subject);
+
     const newPost = new Post({
       author: req.user.userId,
       subject,
